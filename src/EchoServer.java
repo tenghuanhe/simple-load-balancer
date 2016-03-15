@@ -12,8 +12,9 @@ import eneter.net.system.EventHandler;
  */
 public class EchoServer {
     public static void main(String[] args) throws Exception {
+        String port = args[0];
         IMessagingSystemFactory iMessagingSystemFactory = new TcpMessagingSystemFactory();
-        IDuplexInputChannel inputChannel = iMessagingSystemFactory.createDuplexInputChannel("tcp://127.0.0.1:8071");
+        IDuplexInputChannel inputChannel = iMessagingSystemFactory.createDuplexInputChannel("tcp://127.0.0.1:" + port);
         IDuplexStringMessagesFactory iDuplexStringMessagesFactory = new DuplexStringMessagesFactory();
         IDuplexStringMessageReceiver receiver = iDuplexStringMessagesFactory.<String, String>createDuplexStringMessageReceiver();
         receiver.requestReceived().subscribe(new EventHandler<StringRequestReceivedEventArgs>() {
@@ -22,7 +23,7 @@ public class EchoServer {
                 System.out.println(stringRequestReceivedEventArgs.getRequestMessage());
                 IDuplexStringMessageReceiver receiver1 = (IDuplexStringMessageReceiver) o;
                 try {
-                    receiver1.sendResponseMessage(stringRequestReceivedEventArgs.getResponseReceiverId(), "8071");
+                    receiver1.sendResponseMessage(stringRequestReceivedEventArgs.getResponseReceiverId(), "Echo from port " + port);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
